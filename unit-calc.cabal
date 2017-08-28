@@ -4,7 +4,7 @@
 name:                unit-calc
 version:             0.1.0.0
 synopsis:            Calculates things with units.
--- description:         
+description:         Tags numbers with unit types to enforce dimentional accuracy of computations
 license:             GPL-3
 license-file:        LICENSE
 author:              Mark Barbone

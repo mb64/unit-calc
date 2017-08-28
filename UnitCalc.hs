@@ -125,22 +125,24 @@ type FromID (x::TNat) = '(x,Plus One) ': '[]
 type Meter = FromID One
 type Second = FromID (Succ One)
 type Kilogram = FromID (Succ (Succ One))
+type Coulomb = FromID (Succ (Succ (Succ One)))
 
 type Newton = Kilogram * Meter / (Second * Second)
 type Joule = Newton * Meter
 type Watt = Joule / Second
+type Volt = Joule / Coulomb
+type Ampere = Coulomb / Second
+type Ohm = Volt / Ampere
 
 meter :: P.Num a => Tagged Meter a          ; meter = Tagged 1
 second :: P.Num a => Tagged Second a        ; second = Tagged 1
 kilogram :: P.Num a => Tagged Kilogram a    ; kilogram = Tagged 1
+coulomb :: P.Num a => Tagged Coulomb a      ; coulomb = Tagged 1
 
 newton :: P.Num a => Tagged Newton a        ; newton = Tagged 1
 joule :: P.Num a => Tagged Joule a          ; joule = Tagged 1
 watt :: P.Num a => Tagged Watt a            ; watt = Tagged 1
-
-gravity :: P.Fractional a => Tagged (Meter / (Second * Second)) a
-gravity = 9.8 * meter / (second*second)
-
-getWeight :: P.Fractional a => Tagged Kilogram a -> Tagged Newton a
-getWeight x = x * gravity
+volt :: P.Num a => Tagged Volt a            ; volt = Tagged 1
+ampere :: P.Num a => Tagged Ampere a        ; ampere = Tagged 1
+ohm :: P.Num a => Tagged Ohm a              ; ohm = Tagged 1
 
