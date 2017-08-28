@@ -13,7 +13,20 @@
 module UnitCalc where
 
 import qualified Prelude as P
-import Prelude (($), (.), undefined, Maybe(..), Ordering(..), Show(..))
+import Prelude hiding ( Num(..)
+                      , Real(..)
+                      , Integral(..)
+                      , Fractional(..)
+                      , Floating(..)
+                      , RealFrac(..)
+                      , RealFloat(..)
+                      , subtract
+--                      , even, odd
+--                      , gcd, lcm
+                      , (^), (^^)
+--                      , fromIntegral
+--                      , realToFrac
+                      )
 
 -- Type-level integers
 data TNat = Succ TNat | One deriving Show
@@ -66,11 +79,9 @@ infixl 7 *
 type (a::Unit) / (b::Unit) = a * RecipUnit b
 infixl 7 /
 
-type FromID (x::TNat) = '(x,Plus One) ': '[]
---type family FromID (x::TNat) :: Unit where
---    FromID x = '(x,Plus One) ': '[]
-
-newtype Tagged (u::Unit) a = Tagged a deriving (Show, P.Eq)
+-- newtype for tagged numbers
+newtype Tagged (u::Unit) a = Tagged a deriving (Show, Eq)
+-- It's OK that the unit has a phantom role so you can coerce it to whatever units.
 
 -- Num instance for no units
 instance (P.Num a,u ~ '[]) => P.Num (Tagged u a) where
@@ -84,8 +95,8 @@ instance (P.Num a,u ~ '[]) => P.Num (Tagged u a) where
 
 instance (P.Fractional a,u ~ '[]) => P.Fractional (Tagged u a) where
     fromRational = Tagged . P.fromRational
-    (/) = undefined
-    recip = undefined
+    Tagged x / Tagged y = Tagged $ x P./ y
+    recip (Tagged x) = Tagged $ P.recip x
 
 -- Basic numerical operations
 (+),(-) :: P.Num a => Tagged u a -> Tagged u a -> Tagged u a
@@ -108,6 +119,8 @@ negate (Tagged a) = Tagged $ P.negate a
 {-# INLINE (/) #-}
 Tagged x / Tagged y = Tagged $ x P./ y
 
+
+type FromID (x::TNat) = '(x,Plus One) ': '[]
 
 type Meter = FromID One
 type Second = FromID (Succ One)
