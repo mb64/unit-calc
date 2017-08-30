@@ -17,7 +17,7 @@ extra-source-files:  ChangeLog.md, README.md
 cabal-version:       >=1.10
 
 library
-  exposed-modules:     Main, UnitCalc
+  exposed-modules:     Units.Examples, Units.Internals
   -- other-modules:       
   other-extensions:    TypeOperators, TypeInType, RankNTypes, TypeFamilies, UndecidableInstances, FlexibleInstances
   build-depends:       base >=4.9 && <4.10
