@@ -10,16 +10,19 @@ main = return ()
 
 -- Some examples of uses
 
-gravity :: P.Fractional a => Tagged (Meter / (Second * Second)) a
+gravity :: Tagged (Meter / (Second * Second)) Double
 gravity = 9.8 * meter / (second*second)
 
-getWeight :: P.Fractional a => Tagged Kilogram a -> Tagged Newton a
+getWeight :: Tagged Kilogram Double -> Tagged Newton Double
 getWeight x = x * gravity
 
 -- Coulomb's Law
-coulombsConstant :: P.Fractional a => Tagged (Newton * Meter * Meter / (Coulomb * Coulomb)) a
+coulombsConstant :: Tagged (Newton * Meter * Meter / (Coulomb * Coulomb)) Double
 coulombsConstant = Tagged 8.98755e9
 
-forceBtwCharges :: P.Fractional a => Tagged Coulomb a -> Tagged Coulomb a -> Tagged Meter a -> Tagged Newton a
+forceBtwCharges :: Tagged Coulomb Double -> Tagged Coulomb Double -> Tagged Meter Double -> Tagged Newton Double
 forceBtwCharges q1 q2 d = coulombsConstant * q1 * q2 / (d * d)
+
+howHeigh :: Tagged (Meter/Second) Double -> Tagged Meter Double
+howHeigh v = v*v / gravity
 
