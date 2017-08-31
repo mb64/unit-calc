@@ -1,8 +1,5 @@
 {-# LANGUAGE TypeOperators #-}
 {-# LANGUAGE TypeInType #-}
-{-# LANGUAGE AllowAmbiguousTypes #-}
-{-# LANGUAGE TypeSynonymInstances #-}
-{-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE NoMonomorphismRestriction #-}
 
 module Units.Units where
@@ -36,11 +33,11 @@ yardsPerMeter       = feetPerMeter / (3 * foot / yard)                  :: P.Fra
 milesPerMeter       = feetPerMeter / (5280 * foot / mile)               :: P.Fractional a => Tagged (Mile / Meter) a
 
 -- TODO: add other units of mass
-type Kilogram = FromID 10       ; kilogram = kilograms; kilograms = Tagged 1 :: P.Num a => Tagged Kilogram a
+type Kilogram = FromID 10   ; kilogram = kilograms; kilograms = Tagged 1 :: P.Num a => Tagged Kilogram a
 
-type Second = FromID 20         ; second = seconds  ; seconds = Tagged 1 :: P.Num a => Tagged Second a
-type Minute = FromID 21         ; minute = minutes  ; minutes = Tagged 1 :: P.Num a => Tagged Minute a
-type Hour = FromID 22           ; hour = hours      ; hours = Tagged 1 :: P.Num a => Tagged Hour a
+type Second = FromID 20     ; second = seconds  ; seconds = Tagged 1 :: P.Num a => Tagged Second a
+type Minute = FromID 21     ; minute = minutes  ; minutes = Tagged 1 :: P.Num a => Tagged Minute a
+type Hour = FromID 22       ; hour = hours      ; hours = Tagged 1 :: P.Num a => Tagged Hour a
 
 minutesPerSecond    = minute / (60*second)  :: P.Fractional a => Tagged (Minute / Second) a
 hoursPerSecond      = hour / (1440*second)  :: P.Fractional a => Tagged (Hour / Second) a

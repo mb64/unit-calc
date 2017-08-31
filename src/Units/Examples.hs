@@ -5,7 +5,7 @@
 module Units.Examples where
 
 import qualified Prelude as P
-import Prelude hiding (Num(..),Fractional(..))
+import Prelude hiding (Num(..),Fractional(..),Floating(sqrt))
 import Units.Internals
 import Units.Units
 
@@ -32,4 +32,8 @@ howHighImperial :: forall a. P.Fractional a => Tagged (Mile / Hour) a -> Tagged 
 howHighImperial v = feetPerMeter * howHigh v'
   where v' :: Tagged (Meter / Second) a
         v' = v * hoursPerSecond / milesPerMeter
+
+-- Pythagorean theorem (to demonstrate sqrt)
+pythagoreanTheorem :: P.Floating a => Tagged Meter a -> Tagged Meter a -> Tagged Meter a
+pythagoreanTheorem a b = sqrt $ a*a + b*b
 

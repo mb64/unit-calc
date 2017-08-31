@@ -15,7 +15,7 @@ import Prelude hiding ( Num(..) -- Not hiding all the ones that have "dimentionl
 --                      , Real(..)
 --                      , Integral(..)
                       , Fractional(..)
---                      , Floating(..)
+                      , Floating(sqrt)
 --                      , RealFrac(..)
 --                      , RealFloat(..)
                       , subtract
@@ -72,6 +72,16 @@ infixl 7 *
 type (a::Unit) / (b::Unit) = a * RecipUnit b
 infixl 7 /
 
+type family Halve (x::TL.Nat) :: TL.Nat where
+    Halve 0 = TL.TypeError (TL.Text "Fractional exponents in units are not allowed.")
+    Halve 1 = 0 -- Unintuitive arithmatic because (Plus or Minus) x represents ±(x+1)
+    Halve x = 1 TL.+ Halve (x TL.- 2)
+
+type family Sqrt (u::Unit) :: Unit where
+    Sqrt ('(id,Plus exp) ': us) = '(id,Plus (Halve exp)) ': Sqrt us
+    Sqrt ('(id,Minus exp) ': us) = '(id,Minus (Halve exp)) ': Sqrt us
+    Sqrt '[] = '[]
+
 -- newtype for tagged numbers
 newtype Tagged (u::Unit) a = Tagged a deriving (Show,Eq,Ord)
 -- It's OK that the unit has a phantom role so you can coerce it to whatever units.
@@ -104,10 +114,14 @@ Tagged x * Tagged y = Tagged $ x P.* y
 (/) :: P.Fractional a => Tagged u a -> Tagged u' a -> Tagged (u / u') a
 Tagged x / Tagged y = Tagged $ x P./ y
 
+sqrt :: P.Floating a => Tagged u a -> Tagged (Sqrt u) a
+sqrt (Tagged x) = Tagged (P.sqrt x)
+
 {-# INLINE (+) #-}
 {-# INLINE (-) #-}
 {-# INLINE subtract #-}
 {-# INLINE (*) #-}
 {-# INLINE (/) #-}
 {-# INLINE negate #-}
+{-# INLINE sqrt #-}
 
