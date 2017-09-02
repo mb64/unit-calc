@@ -1,20 +1,23 @@
+
 {-# LANGUAGE TypeOperators #-}
 {-# LANGUAGE TypeInType #-}
 {-# LANGUAGE NoMonomorphismRestriction #-}
+{-# LANGUAGE NoImplicitPrelude #-}
 
 module Units.Units where
 -- The module with all the units in it.
 -- I'll probably add export lists to these sometime.
 
 import qualified Prelude as P
-import Prelude hiding (Num(..), Fractional(..), Floating(sqrt)) -- etc. TODO update this later
 import qualified GHC.TypeLits as TL
-import Units.Internals
+import Units.Prelude
+import Units.Internals (TInt(..)) -- Only thing not exported by Units.Prelude
 
 type FromID (x::TL.Nat) = '(x,Plus 1) ': '[]
 
 type One = '[]
 
+-- Distance
 type Meter = FromID 0       ; meter = meters            ; meters = Tagged 1 :: P.Num a => Tagged Meter a
 type Kilometer = FromID 1   ; kilometer = kilometers    ; kilometers = Tagged 1 :: P.Num a => Tagged Kilometer a
 type Centimeter = FromID 2  ; centimeter = centimeters  ; centimeters = Tagged 1 :: P.Num a => Tagged Centimeter a
@@ -32,9 +35,11 @@ feetPerMeter        = inchesPerMeter / (12 * inch / foot)               :: P.Fra
 yardsPerMeter       = feetPerMeter / (3 * foot / yard)                  :: P.Fractional a => Tagged (Yard / Meter) a
 milesPerMeter       = feetPerMeter / (5280 * foot / mile)               :: P.Fractional a => Tagged (Mile / Meter) a
 
+-- Mass
 -- TODO: add other units of mass
 type Kilogram = FromID 10   ; kilogram = kilograms; kilograms = Tagged 1 :: P.Num a => Tagged Kilogram a
 
+-- Time - TODO add fractions of a second
 type Second = FromID 20     ; second = seconds  ; seconds = Tagged 1 :: P.Num a => Tagged Second a
 type Minute = FromID 21     ; minute = minutes  ; minutes = Tagged 1 :: P.Num a => Tagged Minute a
 type Hour = FromID 22       ; hour = hours      ; hours = Tagged 1 :: P.Num a => Tagged Hour a
@@ -42,6 +47,7 @@ type Hour = FromID 22       ; hour = hours      ; hours = Tagged 1 :: P.Num a =>
 minutesPerSecond    = minute / (60*second)  :: P.Fractional a => Tagged (Minute / Second) a
 hoursPerSecond      = hour / (1440*second)  :: P.Fractional a => Tagged (Hour / Second) a
 
+-- Coulombs - I might add microcoulomb, nanocoulomb, ... later
 type Coulomb = FromID 30        ; coulomb = Tagged 1 :: P.Num a => Tagged Coulomb a
 
 type Hertz = One / Second                           ; hertz = Tagged 1 :: P.Num a => Tagged Hertz a

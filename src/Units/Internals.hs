@@ -8,22 +8,31 @@
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 {-# LANGUAGE StandaloneDeriving #-}
 
-module Units.Internals where
+module Units.Internals (
+        -- Types
+        Tagged(..),
+        Unit,
+        TInt(..),
+        type (*),
+        type (/),
+        RecipUnit,
+        Sqrt,
+        -- Functions
+        unTag,
+        (+),(-),subtract,
+        negate,
+        (*),(/),
+        recip,
+        abs,signum,
+        sqrt
+    ) where
 
 import qualified Prelude as P
-import Prelude hiding ( Num(..) -- Not hiding all the ones that have "dimentionless" math functions only
---                      , Real(..)
---                      , Integral(..)
-                      , Fractional(..)
+import Prelude hiding ( Num((+),(-),(*),negate,abs,signum) -- This should be the same import as in Units.Prelude
+                      , Fractional((/),recip)
                       , Floating(sqrt)
---                      , RealFrac(..)
---                      , RealFloat(..)
                       , subtract
---                      , even, odd
---                      , gcd, lcm
-                      , (^), (^^)
---                      , fromIntegral
---                      , realToFrac
+--                      , (^), (^^)
                       )
 import qualified GHC.TypeLits as TL
 
@@ -82,9 +91,12 @@ type family Sqrt (u::Unit) :: Unit where
     Sqrt ('(id,Minus exp) ': us) = '(id,Minus (Halve exp)) ': Sqrt us
     Sqrt '[] = '[]
 
--- newtype for tagged numbers
+-- newtype for tagged numbers; not Data.Tagged because of the explicit Unit kind.
 newtype Tagged (u::Unit) a = Tagged a deriving (Show,Eq,Ord)
--- It's OK that the unit has a phantom role so you can coerce it to whatever units.
+-- It's OK that the unit has a phantom role so you can coerce it to whatever units if you want.
+
+unTag :: Tagged u a -> a
+unTag (Tagged x) = x
 
 -- Num instance for no units, using GND
 deriving instance (P.Num a,u ~ '[]) => P.Num (Tagged u a)
@@ -114,6 +126,15 @@ Tagged x * Tagged y = Tagged $ x P.* y
 (/) :: P.Fractional a => Tagged u a -> Tagged u' a -> Tagged (u / u') a
 Tagged x / Tagged y = Tagged $ x P./ y
 
+recip :: P.Fractional a => Tagged u a -> Tagged (RecipUnit u) a
+recip (Tagged x) = Tagged $ P.recip x
+
+abs :: P.Num a => Tagged u a -> Tagged u a
+abs (Tagged x) = Tagged $ P.abs x
+
+signum :: P.Num a => Tagged u a -> Tagged u a
+signum (Tagged x) = Tagged $ P.signum x
+
 sqrt :: P.Floating a => Tagged u a -> Tagged (Sqrt u) a
 sqrt (Tagged x) = Tagged (P.sqrt x)
 
@@ -122,6 +143,9 @@ sqrt (Tagged x) = Tagged (P.sqrt x)
 {-# INLINE subtract #-}
 {-# INLINE (*) #-}
 {-# INLINE (/) #-}
+{-# INLINE recip #-}
 {-# INLINE negate #-}
+{-# INLINE abs #-}
+{-# INLINE signum #-}
 {-# INLINE sqrt #-}
 

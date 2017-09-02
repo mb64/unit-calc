@@ -1,12 +1,12 @@
 
 {-# LANGUAGE TypeOperators #-}
 {-# LANGUAGE ScopedTypeVariables #-}
+{-# LANGUAGE NoImplicitPrelude #-}
 
 module Units.Examples where
 
 import qualified Prelude as P
-import Prelude hiding (Num(..),Fractional(..),Floating(sqrt))
-import Units.Internals
+import Units.Prelude
 import Units.Units
 
 -- Some examples of uses
