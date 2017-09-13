@@ -2,6 +2,8 @@
 {-# LANGUAGE TypeOperators #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE NoImplicitPrelude #-}
+{-# LANGUAGE TypeApplications #-}
+{-# LANGUAGE TypeInType #-}
 
 module Units.Examples where
 
@@ -35,5 +37,5 @@ howHighImperial v = feetPerMeter * howHigh v'
 
 -- Pythagorean theorem (to demonstrate sqrt)
 pythagoreanTheorem :: P.Floating a => Tagged Meter a -> Tagged Meter a -> Tagged Meter a
-pythagoreanTheorem a b = sqrt $ a*a + b*b
+pythagoreanTheorem a b = sqrt $ pow @2 a + pow @2 b
 

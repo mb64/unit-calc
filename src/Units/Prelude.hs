@@ -1,4 +1,3 @@
-{-# LANGUAGE TypeOperators #-}
 
 module Units.Prelude (
         module Prelude,
@@ -9,7 +8,7 @@ import Prelude hiding ( Num(negate, (+), (-), (*), abs, signum)
                       , Fractional((/), recip)
                       , Floating(sqrt) -- The other Floating functions are dimensionless
                       , subtract
---                      , (^), (^^) -- I'll hide these later, if I ever add exponents.
+--                      , (^), (^^) -- I'll hide these later, if I find a good way to.
                       )
 import Units.Internals hiding (TInt(..))
 

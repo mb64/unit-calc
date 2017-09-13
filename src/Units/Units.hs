@@ -13,10 +13,6 @@ import qualified GHC.TypeLits as TL
 import Units.Prelude
 import Units.Internals (TInt(..)) -- Only thing not exported by Units.Prelude
 
-type FromID (x::TL.Nat) = '(x,Plus 1) ': '[]
-
-type One = '[]
-
 -- Distance
 type Meter = FromID 0       ; meter = meters            ; meters = Tagged 1 :: P.Num a => Tagged Meter a
 type Kilometer = FromID 1   ; kilometer = kilometers    ; kilometers = Tagged 1 :: P.Num a => Tagged Kilometer a

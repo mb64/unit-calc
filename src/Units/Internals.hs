@@ -7,14 +7,20 @@
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 {-# LANGUAGE StandaloneDeriving #-}
+{-# LANGUAGE TypeApplications #-}
+{-# LANGUAGE ScopedTypeVariables #-}
+{-# LANGUAGE AllowAmbiguousTypes #-}
 
 module Units.Internals (
         -- Types
         Tagged(..),
         Unit,
         TInt(..),
+        One,
+        FromID,
         type (*),
         type (/),
+        type (^),
         RecipUnit,
         Sqrt,
         -- Functions
@@ -24,7 +30,8 @@ module Units.Internals (
         (*),(/),
         recip,
         abs,signum,
-        sqrt
+        sqrt,
+        pow
     ) where
 
 import qualified Prelude as P
@@ -35,6 +42,7 @@ import Prelude hiding ( Num((+),(-),(*),negate,abs,signum) -- This should be the
 --                      , (^), (^^)
                       )
 import qualified GHC.TypeLits as TL
+import Data.Proxy (Proxy(..))
 
 -- Type-level integers
 -- Plus n means n+1, Minus n means -n-1 (so as not to include zero)
@@ -42,6 +50,10 @@ data TInt = Plus TL.Nat | Minus TL.Nat -- No zero bc it'll be removed from the l
 
 -- List of (id,exponent) pairs
 type Unit = [(TL.Nat,TInt)]
+
+-- A few useful types
+type FromID (x::TL.Nat) = '(x,Plus 0) ': '[]
+type One = '[]
 
 type family Negate (x::TInt) :: TInt where
     Negate (Plus x) = Minus x
@@ -91,6 +103,11 @@ type family Sqrt (u::Unit) :: Unit where
     Sqrt ('(id,Minus exp) ': us) = '(id,Minus (Halve exp)) ': Sqrt us
     Sqrt '[] = '[]
 
+type family (u::Unit) ^ (e::TL.Nat) where
+    u ^ 0 = One
+    u ^ n = u * u^(n TL.- 1)
+infixr 8 ^
+
 -- newtype for tagged numbers; not Data.Tagged because of the explicit Unit kind.
 newtype Tagged (u::Unit) a = Tagged a deriving (Show,Eq,Ord)
 -- It's OK that the unit has a phantom role so you can coerce it to whatever units if you want.
@@ -136,7 +153,13 @@ signum :: P.Num a => Tagged u a -> Tagged u a
 signum (Tagged x) = Tagged $ P.signum x
 
 sqrt :: P.Floating a => Tagged u a -> Tagged (Sqrt u) a
-sqrt (Tagged x) = Tagged (P.sqrt x)
+sqrt (Tagged x) = Tagged $ P.sqrt x
+
+-- Use with type application, like pow @2 x
+pow :: forall e u a. (TL.KnownNat e,P.Num a) => Tagged u a -> Tagged (u ^ e) a
+pow (Tagged x) = Tagged $ x P.^ e :: Tagged (u ^ e) a
+  where e :: Integer
+        e = TL.natVal (Proxy :: Proxy e)
 
 {-# INLINE (+) #-}
 {-# INLINE (-) #-}
@@ -148,4 +171,5 @@ sqrt (Tagged x) = Tagged (P.sqrt x)
 {-# INLINE abs #-}
 {-# INLINE signum #-}
 {-# INLINE sqrt #-}
+{-# INLINE pow #-}
 
