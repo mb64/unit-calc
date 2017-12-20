@@ -1,8 +1,6 @@
-
 *.o
 **.o
 *.hi
 **.hi
 dist
-dist/*
-
+.stack-work

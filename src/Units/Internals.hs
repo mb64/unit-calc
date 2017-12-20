@@ -103,7 +103,7 @@ type family Sqrt (u::Unit) :: Unit where
     Sqrt ('(id,Minus exp) ': us) = '(id,Minus (Halve exp)) ': Sqrt us
     Sqrt '[] = '[]
 
-type family (u::Unit) ^ (e::TL.Nat) where
+type family (u::Unit) ^ (e::TL.Nat) :: Unit where
     u ^ 0 = One
     u ^ n = u * u^(n TL.- 1)
 infixr 8 ^

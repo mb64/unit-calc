@@ -33,7 +33,9 @@ milesPerMeter       = feetPerMeter / (5280 * foot / mile)               :: P.Fra
 
 -- Mass
 -- TODO: add other units of mass
-type Kilogram = FromID 10   ; kilogram = kilograms; kilograms = Tagged 1 :: P.Num a => Tagged Kilogram a
+type Kilogram = FromID 10   ; kilogram = kilograms  ; kilograms = Tagged 1 :: P.Num a => Tagged Kilogram a
+type Gram = FromID 11       ; gram = grams          ; grams = Tagged 1 :: P.Num a => Tagged Gram a
+gramsPerKilogram    = 1000*gram/kilogram    :: P.Fractional a => Tagged (Gram / Kilogram) a
 
 -- Time - TODO add fractions of a second
 type Second = FromID 20     ; second = seconds  ; seconds = Tagged 1 :: P.Num a => Tagged Second a
@@ -54,4 +56,9 @@ type Volt = Joule / Coulomb                         ; volt = volts      ; volts 
 type Ampere = Coulomb / Second                      ; ampere = amperes  ; amperes = Tagged 1 :: P.Num a => Tagged Ampere a
 type Amp = Ampere                                   ; amp = ampere      ; amps = ampere
 type Ohm = Volt / Ampere                            ; ohm = ohms        ; ohms = Tagged 1 :: P.Num a => Tagged Ohm a
+
+type Mole = FromID 82   ; mol = mole    ; mole = Tagged 1 :: P.Num a => Tagged Mole a
+type Mol = Mole
+nA :: P.Fractional a => Tagged (One / Mol) a
+nA = 6.022e23 / mol
 
